@@ -9,7 +9,7 @@
     var canManageCatalog = User.IsInRole(AppRoles.Admin);
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 page-heading">
     <div>
         <h1>Procurement dashboard</h1>
         <p class="text-muted mb-0">@(User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Admin) ? "Organisation-wide purchase request overview." : "Overview of your purchase requests.")</p>
@@ -27,16 +27,16 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-6 col-xl-3"><div class="card h-100 border-secondary"><div class="card-body"><p class="text-muted mb-1">Draft</p><h2 class="mb-0">@Model.DraftRequests</h2></div></div></div>
-    <div class="col-6 col-xl-3"><div class="card h-100 border-primary"><div class="card-body"><p class="text-muted mb-1">Submitted</p><h2 class="mb-0">@Model.SubmittedRequests</h2></div></div></div>
-    <div class="col-6 col-xl-3"><div class="card h-100 border-success"><div class="card-body"><p class="text-muted mb-1">Approved</p><h2 class="mb-0">@Model.ApprovedRequests</h2></div></div></div>
-    <div class="col-6 col-xl-3"><div class="card h-100 border-danger"><div class="card-body"><p class="text-muted mb-1">Rejected</p><h2 class="mb-0">@Model.RejectedRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card dashboard-card dashboard-card-draft h-100"><div class="card-body"><span class="dashboard-symbol">D</span><p class="text-muted mb-1">Draft</p><h2 class="mb-0">@Model.DraftRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card dashboard-card dashboard-card-submitted h-100"><div class="card-body"><span class="dashboard-symbol">S</span><p class="text-muted mb-1">Submitted</p><h2 class="mb-0">@Model.SubmittedRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card dashboard-card dashboard-card-approved h-100"><div class="card-body"><span class="dashboard-symbol">A</span><p class="text-muted mb-1">Approved</p><h2 class="mb-0">@Model.ApprovedRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card dashboard-card dashboard-card-rejected h-100"><div class="card-body"><span class="dashboard-symbol">R</span><p class="text-muted mb-1">Rejected</p><h2 class="mb-0">@Model.RejectedRequests</h2></div></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-8">
-        <section class="border rounded p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <section class="section-card h-100">
+            <div class="d-flex justify-content-between align-items-center section-card-header">
                 <div><h2 class="h4 mb-1">Recent purchase requests</h2><p class="text-muted mb-0">The five most recently created requests.</p></div>
                 <a asp-controller="PurchaseRequests" asp-action="Index" class="btn btn-sm btn-outline-secondary">View all</a>
             </div>
@@ -57,7 +57,7 @@
         </section>
     </div>
     <div class="col-lg-4">
-        <section class="border rounded p-3 h-100">
+        <section class="section-card value-card h-100">
             <h2 class="h4">Estimated request value</h2>
             <p class="display-6 fw-semibold mb-2">@CurrencyFormatter.ToEuro(Model.TotalEstimatedValue)</p>
             <p class="text-muted mb-0">Sum of the estimated values in the requests visible to your role.</p>
