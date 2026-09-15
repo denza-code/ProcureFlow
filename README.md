@@ -2,6 +2,10 @@
 
 ProcureFlow ERP is a procurement management web application built with ASP.NET Core MVC. It models a complete purchasing workflow, from an employee's request to supplier invoice payment.
 
+## Live Demo
+
+[Open ProcureFlow ERP](https://procureflow-denis-demo-hgh4g5bgb0gpgng5.swedencentral-01.azurewebsites.net/)
+
 ## Features
 
 - Supplier and catalog item management
