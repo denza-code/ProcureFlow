@@ -45,6 +45,7 @@ app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
     await IdentitySeedData.InitializeAsync(scope.ServiceProvider);
+    await DemoDataSeed.InitializeAsync(scope.ServiceProvider);
 }
 
 app.Run();
