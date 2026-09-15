@@ -1,0 +1,38 @@
+@model IEnumerable<ProcureFlow.Web.Models.Invoice>
+@using ProcureFlow.Web.Helpers
+@using ProcureFlow.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div><h1>Invoices</h1><p class="text-muted mb-0">Track supplier invoices from receipt to payment.</p></div>
+    <a asp-action="Create" class="btn btn-primary">Record invoice</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">@successMessage<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+}
+
+<div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Invoice</th><th>Purchase order</th><th>Supplier</th><th>Due date</th><th>Status</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead><tbody>
+@foreach (var invoice in Model)
+{
+    <tr><td class="fw-semibold">@invoice.InvoiceNumber</td><td>@(invoice.PurchaseOrder?.OrderNumber ?? "—")</td><td>@(invoice.PurchaseOrder?.Supplier?.Name ?? "—")</td><td>@invoice.DueDate.ToString("d")</td><td><span class="badge @GetStatusClass(invoice.Status)">@invoice.Status</span></td><td class="text-end">@CurrencyFormatter.ToEuro(invoice.Amount)</td><td class="text-end"><a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-secondary">Details</a></td></tr>
+}
+@if (!Model.Any())
+{
+    <tr><td colspan="7" class="text-center text-muted py-4">No invoices recorded yet.</td></tr>
+}
+</tbody></table></div>
+
+@functions {
+    string GetStatusClass(InvoiceStatus status) => status switch
+    {
+        InvoiceStatus.Received => "invoice-status invoice-status-received",
+        InvoiceStatus.Approved => "invoice-status invoice-status-approved",
+        InvoiceStatus.Paid => "invoice-status invoice-status-paid",
+        _ => "invoice-status invoice-status-received"
+    };
+}

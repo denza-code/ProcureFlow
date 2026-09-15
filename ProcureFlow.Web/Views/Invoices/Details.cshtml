@@ -1,0 +1,41 @@
+@model ProcureFlow.Web.Models.Invoice
+@using ProcureFlow.Web.Helpers
+@using ProcureFlow.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Invoice";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4"><div><p class="text-muted mb-1">@(Model.PurchaseOrder?.OrderNumber ?? "Purchase order")</p><h1 class="mb-1">@Model.InvoiceNumber</h1><span class="badge @GetStatusClass(Model.Status)">@Model.Status</span></div><a asp-action="Index" class="btn btn-outline-secondary">Back to invoices</a></div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">@successMessage<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4"><div class="col-md-6"><section class="border rounded p-3 h-100"><h2 class="h5">Supplier and order</h2><dl class="mb-0"><dt>Supplier</dt><dd>@(Model.PurchaseOrder?.Supplier?.Name ?? "—")</dd><dt>Purchase order</dt><dd>@(Model.PurchaseOrder?.OrderNumber ?? "—")</dd></dl></section></div><div class="col-md-6"><section class="border rounded p-3 h-100"><h2 class="h5">Invoice details</h2><dl class="mb-0"><dt>Invoice date</dt><dd>@Model.InvoiceDate.ToString("d")</dd><dt>Due date</dt><dd>@Model.DueDate.ToString("d")</dd><dt>Amount</dt><dd>@CurrencyFormatter.ToEuro(Model.Amount)</dd>@if (Model.PaidAtUtc is not null) { <dt>Paid</dt><dd>@Model.PaidAtUtc.Value.ToLocalTime().ToString("g")</dd> }</dl></section></div></div>
+
+<div class="d-flex gap-2 mt-4">
+@if (Model.Status == InvoiceStatus.Received)
+{
+    <form asp-action="Approve" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="btn btn-primary">Approve for payment</button></form>
+}
+@if (Model.Status == InvoiceStatus.Approved)
+{
+    <form asp-action="MarkPaid" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="btn btn-success">Mark as paid</button></form>
+}
+</div>
+
+@functions {
+    string GetStatusClass(InvoiceStatus status) => status switch
+    {
+        InvoiceStatus.Received => "invoice-status invoice-status-received",
+        InvoiceStatus.Approved => "invoice-status invoice-status-approved",
+        InvoiceStatus.Paid => "invoice-status invoice-status-paid",
+        _ => "invoice-status invoice-status-received"
+    };
+}

@@ -1,0 +1,23 @@
+@model ProcureFlow.Web.Models.Supplier
+
+@{
+    ViewData["Title"] = "Add supplier";
+}
+
+<h1>Add supplier</h1>
+<p class="text-muted">Enter the supplier's business and contact details.</p>
+
+<div class="row">
+    <div class="col-md-7">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_SupplierForm" model="Model" />
+            <button type="submit" class="btn btn-primary">Create supplier</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

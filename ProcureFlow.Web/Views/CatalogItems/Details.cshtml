@@ -1,0 +1,31 @@
+@model ProcureFlow.Web.Models.CatalogItem
+@using ProcureFlow.Web.Helpers
+
+@{
+    ViewData["Title"] = "Catalog item details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@Model.Name</h1>
+        <p class="text-muted mb-0">Catalog item details</p>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to catalog</a>
+    </div>
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Item code</dt>
+    <dd class="col-sm-9">@(Model.ItemCode ?? "—")</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@(Model.Description ?? "—")</dd>
+
+    <dt class="col-sm-3">Estimated unit price</dt>
+    <dd class="col-sm-9">@CurrencyFormatter.ToEuro(Model.EstimatedUnitPrice)</dd>
+
+    <dt class="col-sm-3">Unit of measure</dt>
+    <dd class="col-sm-9">@Model.UnitOfMeasure</dd>
+</dl>

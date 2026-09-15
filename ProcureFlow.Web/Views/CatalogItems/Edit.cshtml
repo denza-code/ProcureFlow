@@ -1,0 +1,24 @@
+@model ProcureFlow.Web.Models.CatalogItem
+
+@{
+    ViewData["Title"] = "Edit catalog item";
+}
+
+<h1>Edit catalog item</h1>
+<p class="text-muted">Update the catalog information and current estimated price.</p>
+
+<div class="row">
+    <div class="col-md-7">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <partial name="_CatalogItemForm" model="Model" />
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

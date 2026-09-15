@@ -1,0 +1,28 @@
+@model ProcureFlow.Web.ViewModels.RejectPurchaseRequestViewModel
+
+@{
+    ViewData["Title"] = "Reject purchase request";
+}
+
+<h1>Reject purchase request</h1>
+<p class="text-muted">@Model.RequestNumber — @Model.Title</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Reject">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PurchaseRequestId" />
+            <div class="mb-4">
+                <label asp-for="DecisionNote" class="form-label"></label>
+                <textarea asp-for="DecisionNote" class="form-control" rows="5" placeholder="Explain why this request cannot be approved."></textarea>
+                <span asp-validation-for="DecisionNote" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-danger">Reject request</button>
+            <a asp-action="Details" asp-route-id="@Model.PurchaseRequestId" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -1,0 +1,77 @@
+@model ProcureFlow.Web.ViewModels.DashboardViewModel
+@using ProcureFlow.Web.Helpers
+@using ProcureFlow.Web.Models.Enums
+@using ProcureFlow.Web.Security
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var canCreateRequest = User.IsInRole(AppRoles.Employee) || User.IsInRole(AppRoles.Admin);
+    var canManageCatalog = User.IsInRole(AppRoles.Admin);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Procurement dashboard</h1>
+        <p class="text-muted mb-0">@(User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Admin) ? "Organisation-wide purchase request overview." : "Overview of your purchase requests.")</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (canManageCatalog)
+        {
+            <a asp-controller="CatalogItems" asp-action="Create" class="btn btn-outline-primary">Add catalog item</a>
+        }
+        @if (canCreateRequest)
+        {
+            <a asp-controller="PurchaseRequests" asp-action="Create" class="btn btn-primary">New purchase request</a>
+        }
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3"><div class="card h-100 border-secondary"><div class="card-body"><p class="text-muted mb-1">Draft</p><h2 class="mb-0">@Model.DraftRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card h-100 border-primary"><div class="card-body"><p class="text-muted mb-1">Submitted</p><h2 class="mb-0">@Model.SubmittedRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card h-100 border-success"><div class="card-body"><p class="text-muted mb-1">Approved</p><h2 class="mb-0">@Model.ApprovedRequests</h2></div></div></div>
+    <div class="col-6 col-xl-3"><div class="card h-100 border-danger"><div class="card-body"><p class="text-muted mb-1">Rejected</p><h2 class="mb-0">@Model.RejectedRequests</h2></div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section class="border rounded p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h2 class="h4 mb-1">Recent purchase requests</h2><p class="text-muted mb-0">The five most recently created requests.</p></div>
+                <a asp-controller="PurchaseRequests" asp-action="Index" class="btn btn-sm btn-outline-secondary">View all</a>
+            </div>
+            @if (Model.RecentRequests.Any())
+            {
+                <div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Request</th><th>Title</th><th>Status</th><th class="text-end">Value</th></tr></thead><tbody>
+                @foreach (var request in Model.RecentRequests)
+                {
+                    var total = request.Items.Sum(item => item.EstimatedTotal);
+                    <tr><td><a asp-controller="PurchaseRequests" asp-action="Details" asp-route-id="@request.Id">@request.RequestNumber</a></td><td>@request.Title</td><td><span class="badge @GetStatusClass(request.Status)">@request.Status</span></td><td class="text-end">@CurrencyFormatter.ToEuro(total)</td></tr>
+                }
+                </tbody></table></div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No purchase requests created yet.</p>
+            }
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <section class="border rounded p-3 h-100">
+            <h2 class="h4">Estimated request value</h2>
+            <p class="display-6 fw-semibold mb-2">@CurrencyFormatter.ToEuro(Model.TotalEstimatedValue)</p>
+            <p class="text-muted mb-0">Sum of the estimated values in the requests visible to your role.</p>
+        </section>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(PurchaseRequestStatus status) => status switch
+    {
+        PurchaseRequestStatus.Draft => "request-status request-status-draft",
+        PurchaseRequestStatus.Submitted => "request-status request-status-submitted",
+        PurchaseRequestStatus.Approved => "request-status request-status-approved",
+        PurchaseRequestStatus.Rejected => "request-status request-status-rejected",
+        _ => "request-status request-status-draft"
+    };
+}

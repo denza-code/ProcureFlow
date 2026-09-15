@@ -1,0 +1,35 @@
+@model ProcureFlow.Web.ViewModels.AddPurchaseRequestItemViewModel
+
+@{
+    ViewData["Title"] = "Add request item";
+}
+
+<h1>Add request item</h1>
+<p class="text-muted">The estimated price is copied from the catalog and preserved on this request.</p>
+
+<div class="row">
+    <div class="col-md-7">
+        <form asp-action="AddItem">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PurchaseRequestId" />
+            <div class="mb-3">
+                <label asp-for="CatalogItemId" class="form-label"></label>
+                <select asp-for="CatalogItemId" asp-items="Model.CatalogItems" class="form-select">
+                    <option value="">Select a catalog item</option>
+                </select>
+                <span asp-validation-for="CatalogItemId" class="text-danger"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Quantity" class="form-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Add item</button>
+            <a asp-action="Details" asp-route-id="@Model.PurchaseRequestId" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

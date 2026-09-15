@@ -1,0 +1,86 @@
+@model IEnumerable<ProcureFlow.Web.Models.PurchaseRequest>
+@using ProcureFlow.Web.Helpers
+@using ProcureFlow.Web.Models.Enums
+@using ProcureFlow.Web.Security
+
+@{
+    ViewData["Title"] = "Purchase requests";
+    var canCreateRequest = User.IsInRole(AppRoles.Employee) || User.IsInRole(AppRoles.Admin);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Purchase requests</h1>
+        <p class="text-muted mb-0">@(User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Admin) ? "Review and track purchase requests." : "Create and track your purchase requests.")</p>
+    </div>
+    @if (canCreateRequest)
+    {
+        <a asp-action="Create" class="btn btn-primary">New purchase request</a>
+    }
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-warning" role="alert">@errorMessage</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Request</th>
+                <th>Title</th>
+                @if (User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Admin))
+                {
+                    <th>Requester</th>
+                }
+                <th>Status</th>
+                <th class="text-end">Estimated value</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                var estimatedTotal = request.Items.Sum(item => item.EstimatedTotal);
+                <tr>
+                    <td class="fw-semibold">@request.RequestNumber</td>
+                    <td>@request.Title</td>
+                    @if (User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Admin))
+                    {
+                        <td>@(request.RequesterUser?.Email ?? "—")</td>
+                    }
+                    <td>
+                        <span class="badge @GetStatusClass(request.Status)">@request.Status</span>
+                    </td>
+                    <td class="text-end">@CurrencyFormatter.ToEuro(estimatedTotal)</td>
+                    <td class="text-end"><a asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-outline-secondary">Details</a></td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No purchase requests found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@functions {
+    string GetStatusClass(PurchaseRequestStatus status) => status switch
+    {
+        PurchaseRequestStatus.Draft => "request-status request-status-draft",
+        PurchaseRequestStatus.Submitted => "request-status request-status-submitted",
+        PurchaseRequestStatus.Approved => "request-status request-status-approved",
+        PurchaseRequestStatus.Rejected => "request-status request-status-rejected",
+        _ => "request-status request-status-draft"
+    };
+}

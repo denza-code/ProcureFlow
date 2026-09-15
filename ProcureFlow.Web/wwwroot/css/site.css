@@ -1,0 +1,85 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.request-status {
+  display: inline-block;
+  min-width: 5.75rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.request-status-draft {
+  color: #334155 !important;
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.request-status-submitted {
+  color: #1d4ed8 !important;
+  background-color: #dbeafe !important;
+  border-color: #93c5fd !important;
+}
+
+.request-status-approved {
+  color: #065f46 !important;
+  background-color: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+}
+
+.request-status-rejected {
+  color: #991b1b !important;
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+}
+
+.order-status {
+  display: inline-block;
+  min-width: 5.75rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.order-status-draft { color: #334155 !important; background-color: #e2e8f0 !important; border-color: #cbd5e1 !important; }
+.order-status-sent { color: #1d4ed8 !important; background-color: #dbeafe !important; border-color: #93c5fd !important; }
+.order-status-received { color: #065f46 !important; background-color: #d1fae5 !important; border-color: #6ee7b7 !important; }
+.order-status-cancelled { color: #991b1b !important; background-color: #fee2e2 !important; border-color: #fca5a5 !important; }
+
+.invoice-status {
+  display: inline-block;
+  min-width: 5.75rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.invoice-status-received { color: #1d4ed8 !important; background-color: #dbeafe !important; border-color: #93c5fd !important; }
+.invoice-status-approved { color: #065f46 !important; background-color: #d1fae5 !important; border-color: #6ee7b7 !important; }
+.invoice-status-paid { color: #5b21b6 !important; background-color: #ede9fe !important; border-color: #c4b5fd !important; }

@@ -1,0 +1,9 @@
+namespace ProcureFlow.Web.Models.Enums;
+
+public enum PurchaseOrderStatus
+{
+    Draft,
+    Sent,
+    Received,
+    Cancelled
+}

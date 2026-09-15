@@ -1,0 +1,21 @@
+@model ProcureFlow.Web.ViewModels.CreateInvoiceViewModel
+
+@{
+    ViewData["Title"] = "Record invoice";
+}
+
+<h1>Record invoice</h1>
+<p class="text-muted">Invoices can be recorded only for received purchase orders.</p>
+
+<div class="row"><div class="col-md-8"><form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3"><label asp-for="PurchaseOrderId" class="form-label"></label><select asp-for="PurchaseOrderId" asp-items="Model.PurchaseOrders" class="form-select"><option value="">Select a received purchase order</option></select><span asp-validation-for="PurchaseOrderId" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="InvoiceNumber" class="form-label"></label><input asp-for="InvoiceNumber" class="form-control" placeholder="Example: INV-2026-001" /><span asp-validation-for="InvoiceNumber" class="text-danger"></span></div>
+    <div class="row"><div class="col-md-6 mb-3"><label asp-for="InvoiceDate" class="form-label"></label><input asp-for="InvoiceDate" class="form-control" /><span asp-validation-for="InvoiceDate" class="text-danger"></span></div><div class="col-md-6 mb-3"><label asp-for="DueDate" class="form-label"></label><input asp-for="DueDate" class="form-control" /><span asp-validation-for="DueDate" class="text-danger"></span></div></div>
+    <div class="mb-4"><label asp-for="Amount" class="form-label"></label><input asp-for="Amount" class="form-control" placeholder="Example: 1250,00" /><span asp-validation-for="Amount" class="text-danger"></span></div>
+    <button type="submit" class="btn btn-primary">Record invoice</button><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form></div></div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

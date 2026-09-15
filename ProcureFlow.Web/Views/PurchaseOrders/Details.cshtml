@@ -1,0 +1,69 @@
+@model ProcureFlow.Web.Models.PurchaseOrder
+@using ProcureFlow.Web.Helpers
+@using ProcureFlow.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Purchase order";
+    var total = Model.Items.Sum(item => item.Total);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <p class="text-muted mb-1">@Model.OrderNumber</p>
+        <h1 class="mb-1">@(Model.Supplier?.Name ?? "Purchase order")</h1>
+        <span class="badge @GetStatusClass(Model.Status)">@Model.Status</span>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to orders</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">@successMessage<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6"><section class="border rounded p-3 h-100"><h2 class="h5">Supplier</h2><p class="mb-1 fw-semibold">@(Model.Supplier?.Name ?? "—")</p><p class="mb-0 text-muted">@(Model.Supplier?.Email ?? "No email recorded")</p></section></div>
+    <div class="col-md-6"><section class="border rounded p-3 h-100"><h2 class="h5">Order details</h2><dl class="mb-0"><dt>Purchase request</dt><dd>@(Model.PurchaseRequest?.RequestNumber ?? "—")</dd><dt>Created</dt><dd>@Model.CreatedAtUtc.ToLocalTime().ToString("g")</dd>@if (Model.SentAtUtc is not null) { <dt>Sent</dt><dd>@Model.SentAtUtc.Value.ToLocalTime().ToString("g")</dd> }</dl></section></div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 mb-0">Order items</h2><strong>Total: @CurrencyFormatter.ToEuro(total)</strong></div>
+<div class="table-responsive mb-4"><table class="table table-hover align-middle"><thead><tr><th>Item</th><th>Unit</th><th class="text-end">Quantity</th><th class="text-end">Unit price</th><th class="text-end">Total</th></tr></thead><tbody>
+@foreach (var item in Model.Items)
+{
+    <tr><td>@item.ItemName</td><td>@item.UnitOfMeasure</td><td class="text-end">@item.Quantity</td><td class="text-end">@CurrencyFormatter.ToEuro(item.UnitPrice)</td><td class="text-end">@CurrencyFormatter.ToEuro(item.Total)</td></tr>
+}
+</tbody></table></div>
+
+<div class="d-flex gap-2">
+    @if (Model.Status == PurchaseOrderStatus.Received)
+    {
+        <a asp-controller="Invoices" asp-action="Create" asp-route-orderId="@Model.Id" class="btn btn-outline-primary">Record invoice</a>
+    }
+    @if (Model.Status == PurchaseOrderStatus.Draft)
+    {
+        <form asp-action="Send" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="btn btn-primary">Mark as sent</button></form>
+    }
+    @if (Model.Status == PurchaseOrderStatus.Sent)
+    {
+        <form asp-action="Receive" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="btn btn-success">Mark as received</button></form>
+    }
+    @if (Model.Status is PurchaseOrderStatus.Draft or PurchaseOrderStatus.Sent)
+    {
+        <form asp-action="Cancel" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="btn btn-outline-danger">Cancel order</button></form>
+    }
+</div>
+
+@functions {
+    string GetStatusClass(PurchaseOrderStatus status) => status switch
+    {
+        PurchaseOrderStatus.Draft => "order-status order-status-draft",
+        PurchaseOrderStatus.Sent => "order-status order-status-sent",
+        PurchaseOrderStatus.Received => "order-status order-status-received",
+        PurchaseOrderStatus.Cancelled => "order-status order-status-cancelled",
+        _ => "order-status order-status-draft"
+    };
+}

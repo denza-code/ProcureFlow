@@ -1,0 +1,30 @@
+@model ProcureFlow.Web.ViewModels.CreatePurchaseOrderViewModel
+
+@{
+    ViewData["Title"] = "Create purchase order";
+}
+
+<h1>Create purchase order</h1>
+<p class="text-muted">Select an approved purchase request and the supplier who will receive the order.</p>
+
+<div class="row"><div class="col-md-8">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="PurchaseRequestId" class="form-label"></label>
+            <select asp-for="PurchaseRequestId" asp-items="Model.PurchaseRequests" class="form-select"><option value="">Select an approved request</option></select>
+            <span asp-validation-for="PurchaseRequestId" class="text-danger"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="SupplierId" class="form-label"></label>
+            <select asp-for="SupplierId" asp-items="Model.Suppliers" class="form-select"><option value="">Select a supplier</option></select>
+            <span asp-validation-for="SupplierId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Create order</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div></div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
