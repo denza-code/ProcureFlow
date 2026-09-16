@@ -15,6 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             errorNumbersToAdd: null)));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Reads APPLICATIONINSIGHTS_CONNECTION_STRING from Azure App Service.
+// No visitor identity or application secrets are recorded here.
+builder.Services.AddApplicationInsightsTelemetry();
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
