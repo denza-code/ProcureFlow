@@ -1,4 +1,7 @@
 ﻿<!DOCTYPE html>
+@{
+    var applicationInsightsConnectionString = Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+}
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +10,22 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProcureFlow.Web.styles.css" asp-append-version="true" />
+    @if (!string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+    {
+        <script src="https://js.monitor.azure.com/scripts/b/ai.3.gbl.min.js" crossorigin="anonymous"></script>
+        <script>
+            (() => {
+                const snippet = {
+                    config: {
+                        connectionString: @Html.Raw(JsonSerializer.Serialize(applicationInsightsConnectionString))
+                    }
+                };
+                const telemetry = new Microsoft.ApplicationInsights.ApplicationInsights(snippet);
+                telemetry.loadAppInsights();
+                telemetry.trackPageView();
+            })();
+        </script>
+    }
 </head>
 <body class="app-shell">
     <header>
